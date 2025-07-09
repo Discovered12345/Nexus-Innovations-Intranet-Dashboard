@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Intranet - Developer Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-light: #4895ef;
+            --secondary: #3f37c9;
+            --accent: #f72585;
+            --dark: #1a1a2e;
+            --light: #f8fafc;
+            --gray: #6c757d;
+            --card-bg: #ffffff;
+            --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        .dark-mode {
+            --dark: #f8fafc;
+            --light: #1a1a2e;
+            --card-bg: #1e293b;
+            --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+            transition: var(--transition);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .dark-mode header {
+            border-bottom-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo img {
+            height: 40px;
+            width: 40px;
+            border-radius: 10px;
+        }
+
+        .logo h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        /* Search Bar */
+        .search-bar {
+            position: relative;
+            width: 400px;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 0.75rem 1.5rem 0.75rem 3rem;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 2rem;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .dark-mode .search-bar input {
+            background: #2d3748;
+            border-color: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+
+        .search-bar i {
+            position: absolute;
+            left: 1.25rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        /* User Controls */
+        .user-controls {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
+        .notification-badge {
+            position: relative;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--dark);
+            font-size: 1.25rem;
+        }
+
+        .dark-mode .notification-badge {
+            color: white;
+        }
+
+        .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--accent);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        .user-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary-light);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.1);
+            border-color: var(--accent);
+        }
+
+        /* Main Layout */
+        .main-content {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 2rem;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.9rem 1.25rem;
+            border-radius: 0.75rem;
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .dark-mode .sidebar-nav a {
+            color: white;
+        }
+
+        .sidebar-nav a i {
+            font-size: 1.1rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .sidebar-nav a:hover, .sidebar-nav a.active {
+            background: rgba(67, 97, 238, 0.1);
+            color: var(--primary);
+        }
+
+        .dark-mode .sidebar-nav a:hover, 
+        .dark-mode .sidebar-nav a.active {
+            background: rgba(67, 97, 238, 0.2);
+        }
+
+        /* Team Status */
+        .online-team h3 {
+            color: var(--dark);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .dark-mode .online-team h3 {
+            color: white;
+        }
+
+        .team-members {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .team-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary-light);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .team-avatar:hover {
+            transform: scale(1.1);
+            border-color: var(--accent);
+        }
+
+        /* Dashboard Grid */
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 1.5rem;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--card-bg);
+            border-radius: 1rem;
+            padding: 1.75rem;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .dark-mode .card:hover {
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Welcome Card */
+        .welcome-card {
+            grid-column: span 8;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(67, 97, 238, 0.1) 0%, rgba(0,0,0,0) 70%);
+            z-index: 0;
+        }
+
+        .welcome-card h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+            color: var(--primary);
+        }
+
+        .welcome-card p {
+            color: var(--dark);
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .dark-mode .welcome-card p {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .welcome-actions {
+            display: flex;
+            gap: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.85rem 1.75rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: var(--transition);
+            font-size: 0.95rem;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-light);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(67, 97, 238, 0.3);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: rgba(67, 97, 238, 0.1);
+            transform: translateY(-3px);
+        }
+
+        .dark-mode .btn-outline {
+            color: white;
+            border-color: white;
+        }
+
+        /* Stats Card */
+        .stats-card {
+            grid-column: span 4;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 2.25rem;
+            font-weight: 800;
+            color: var(--primary);
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.95rem;
+            color: var(--gray);
+        }
+
+        /* Calendar */
+        .calendar-card {
+            grid-column: span 4;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .calendar-header h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .calendar-nav button {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(67, 97, 238, 0.1);
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .calendar-nav button:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.75rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .calendar-day-header {
+            font-weight: 600;
+            padding: 0.75rem 0;
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        .calendar-day {
+            padding: 0.75rem 0;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            font-weight: 500;
+        }
+
+        .calendar-day:hover {
+            background: rgba(67, 97, 238, 0.1);
+        }
+
+        .calendar-day.today {
+            background: var(--primary);
+            color: white;
+            font-weight: 700;
+        }
+
+        .calendar-day.event::after {
+            content: '';
+            position: absolute;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent);
+        }
+
+        .upcoming-events h4 {
+            font-size: 1.1rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .event-item {
+            padding: 1.25rem 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .dark-mode .event-item {
+            border-bottom-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .event-item:last-child {
+            border-bottom: none;
+        }
+
+        .event-time {
+            font-size: 0.85rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .event-item p {
+            font-weight: 500;
+        }
+
+        /* Team Card */
+        .team-card {
+            grid-column: span 4;
+        }
+
+        .team-card h3 {
+            margin-bottom: 1.5rem;
+        }
+
+        .team-member {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            padding: 1.25rem 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+        }
+
+        .dark-mode .team-member {
+            border-bottom-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .team-member:hover {
+            transform: translateX(5px);
+        }
+
+        .team-member:last-child {
+            border-bottom: none;
+        }
+
+        .member-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary-light);
+            transition: var(--transition);
+        }
+
+        .member-info h4 {
+            margin-bottom: 0.25rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .member-role {
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+
+        .member-status {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #10b981;
+            margin-left: 0.75rem;
+        }
+
+        /* News Card */
+        .news-card {
+            grid-column: span 4;
+        }
+
+        .news-card h3 {
+            margin-bottom: 1.5rem;
+        }
+
+        .news-item {
+            padding: 1.25rem 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .dark-mode .news-item {
+            border-bottom-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .news-item:last-child {
+            border-bottom: none;
+        }
+
+        .news-date {
+            font-size: 0.85rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .news-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 1.05rem;
+        }
+
+        /* Resources Card */
+        .resources-card {
+            grid-column: span 4;
+        }
+
+        .resources-card h3 {
+            margin-bottom: 1.5rem;
+        }
+
+        .resource-tabs {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .resource-tab {
+            padding: 0.6rem 1.25rem;
+            border-radius: 2rem;
+            background: rgba(67, 97, 238, 0.1);
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .dark-mode .resource-tab {
+            background: rgba(67, 97, 238, 0.2);
+            color: white;
+        }
+
+        .resource-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .resource-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .resource-item {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            padding: 1.25rem;
+            border-radius: 0.75rem;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .resource-item:hover {
+            background: rgba(67, 97, 238, 0.1);
+        }
+
+        .dark-mode .resource-item:hover {
+            background: rgba(67, 97, 238, 0.2);
+        }
+
+        .resource-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 0.75rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .resource-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .resource-meta {
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+
+        /* Quick Links */
+        .quick-links {
+            grid-column: span 12;
+            margin-top: 1rem;
+        }
+
+        .quick-links h3 {
+            margin-bottom: 1.5rem;
+        }
+
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .link-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            text-decoration: none;
+            color: var(--dark);
+            transition: var(--transition);
+        }
+
+        .dark-mode .link-item {
+            color: white;
+        }
+
+        .link-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .link-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 1rem;
+            background: rgba(67, 97, 238, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--primary);
+            transition: var(--transition);
+        }
+
+        .dark-mode .link-icon {
+            background: rgba(67, 97, 238, 0.2);
+        }
+
+        .link-item:hover .link-icon {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 5px 20px rgba(67, 97, 238, 0.3);
+        }
+
+        .link-label {
+            font-weight: 500;
+            font-size: 0.95rem;
+            text-align: center;
+        }
+
+        /* AI Chatbot */
+        .ai-chatbot {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            z-index: 100;
+            transition: var(--transition);
+            border: none;
+        }
+
+        .ai-chatbot:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Accessibility Controls */
+        .accessibility-controls {
+            position: fixed;
+            bottom: 2rem;
+            left: 2rem;
+            display: flex;
+            gap: 0.75rem;
+            z-index: 100;
+        }
+
+        .accessibility-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(67, 97, 238, 0.1);
+            border: none;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1.1rem;
+        }
+
+        .dark-mode .accessibility-btn {
+            background: rgba(67, 97, 238, 0.2);
+            color: white;
+        }
+
+        .accessibility-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            animation: fadeIn 0.5s ease forwards;
+            opacity: 0;
+        }
+
+        .card:nth-child(1) { animation-delay: 0.1s; }
+        .card:nth-child(2) { animation-delay: 0.2s; }
+        .card:nth-child(3) { animation-delay: 0.3s; }
+        .card:nth-child(4) { animation-delay: 0.4s; }
+        .card:nth-child(5) { animation-delay: 0.5s; }
+        .card:nth-child(6) { animation-delay: 0.6s; }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .dashboard {
+                grid-template-columns: repeat(6, 1fr);
+            }
+            
+            .welcome-card, .stats-card {
+                grid-column: span 6;
+            }
+            
+            .calendar-card, .team-card, 
+            .news-card, .resources-card {
+                grid-column: span 3;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+            
+            .search-bar {
+                width: 350px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+            
+            .search-bar {
+                width: 100%;
+            }
+            
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .welcome-card, .stats-card, 
+            .calendar-card, .team-card, 
+            .news-card, .resources-card {
+                grid-column: span 1;
+            }
+            
+            .stats-card {
+                grid-template-columns: 1fr;
+            }
+            
+            .welcome-actions {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .links-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .accessibility-controls {
+                bottom: 1.5rem;
+                left: 1.5rem;
+                flex-direction: column;
+            }
+            
+            .ai-chatbot {
+                bottom: 1.5rem;
+                right: 1.5rem;
+                width: 50px;
+                height: 50px;
+                font-size: 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <img src="https://ui-avatars.com/api/?name=Nexus+Innovations&background=4361ee&color=fff" alt="Logo">
+                <h1>Nexus Intranet</h1>
+            </div>
+            
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search or type @ai for help...">
+            </div>
+            
+            <div class="user-controls">
+                <button class="notification-badge">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge">3</span>
+                </button>
+                <button class="notification-badge">
+                    <i class="fas fa-envelope"></i>
+                    <span class="badge">5</span>
+                </button>
+                <img src="https://avatars.githubusercontent.com/u/12345?v=4" alt="Andrew" class="user-avatar">
+            </div>
+        </header>
+        
+        <div class="main-content">
+            <aside class="sidebar">
+                <nav class="sidebar-nav">
+                    <a href="#" class="active">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="#">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Calendar</span>
+                    </a>
+                    <a href="#">
+                        <i class="fas fa-code-branch"></i>
+                        <span>Projects</span>
+                    </a>
+                    <a href="#">
+                        <i class="fab fa-github"></i>
+                        <span>Repositories</span>
+                    </a>
+                    <a href="#">
+                        <i class="fas fa-users"></i>
+                        <span>Team</span>
+                    </a>
+                    <a href="#">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Documents</span>
+                    </a>
+                    <a href="#">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </nav>
+                
+                <div class="card online-team">
+                    <h3>Active Team</h3>
+                    <div class="team-members">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Team Member" class="team-avatar" title="John D.">
+                        <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="Team Member" class="team-avatar" title="Alice M.">
+                        <img src="https://randomuser.me/api/portraits/men/75.jpg" alt="Team Member" class="team-avatar" title="Sam K.">
+                    </div>
+                </div>
+            </aside>
+            
+            <main class="dashboard">
+                <section class="card welcome-card">
+                    <h2>Welcome back, Andrew!</h2>
+                    <p>Senior Developer | 3 unmerged PRs | Next meeting in 1h 15m</p>
+                    
+                    <div class="welcome-actions">
+                        <button class="btn btn-primary">
+                            <i class="fas fa-code"></i>
+                            New Repository
+                        </button>
+                        <button class="btn btn-outline">
+                            <i class="fas fa-calendar-plus"></i>
+                            Schedule Standup
+                        </button>
+                        <button class="btn btn-outline">
+                            <i class="fab fa-git-alt"></i>
+                            Review PRs
+                        </button>
+                    </div>
+                </section>
+                
+                <section class="card stats-card">
+                    <div class="stat-item">
+                        <span class="stat-value">8</span>
+                        <span class="stat-label">Active Repos</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">3</span>
+                        <span class="stat-label">Pending PRs</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">12</span>
+                        <span class="stat-label">Commits (7d)</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">2</span>
+                        <span class="stat-label">Blockers</span>
+                    </div>
+                </section>
+                
+                <section class="card calendar-card">
+                    <div class="calendar-header">
+                        <h3>June 2023</h3>
+                        <div class="calendar-nav">
+                            <button><i class="fas fa-chevron-left"></i></button>
+                            <button><i class="fas fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                    
+                    <div class="calendar-grid">
+                        <div class="calendar-day-header">Sun</div>
+                        <div class="calendar-day-header">Mon</div>
+                        <div class="calendar-day-header">Tue</div>
+                        <div class="calendar-day-header">Wed</div>
+                        <div class="calendar-day-header">Thu</div>
+                        <div class="calendar-day-header">Fri</div>
+                        <div class="calendar-day-header">Sat</div>
+                        
+                        <!-- Calendar Days -->
+                        <div class="calendar-day">28</div>
+                        <div class="calendar-day">29</div>
+                        <div class="calendar-day">30</div>
+                        <div class="calendar-day">31</div>
+                        <div class="calendar-day">1</div>
+                        <div class="calendar-day">2</div>
+                        <div class="calendar-day">3</div>
+                        
+                        <div class="calendar-day">4</div>
+                        <div class="calendar-day">5</div>
+                        <div class="calendar-day event">6</div>
+                        <div class="calendar-day">7</div>
+                        <div class="calendar-day">8</div>
+                        <div class="calendar-day event">9</div>
+                        <div class="calendar-day">10</div>
+                        
+                        <div class="calendar-day">11</div>
+                        <div class="calendar-day">12</div>
+                        <div class="calendar-day event">13</div>
+                        <div class="calendar-day">14</div>
+                        <div class="calendar-day">15</div>
+                        <div class="calendar-day event">16</div>
+                        <div class="calendar-day">17</div>
+                        
+                        <div class="calendar-day">18</div>
+                        <div class="calendar-day">19</div>
+                        <div class="calendar-day event">20</div>
+                        <div class="calendar-day today">21</div>
+                        <div class="calendar-day">22</div>
+                        <div class="calendar-day event">23</div>
+                        <div class="calendar-day">24</div>
+                        
+                        <div class="calendar-day">25</div>
+                        <div class="calendar-day">26</div>
+                        <div class="calendar-day">27</div>
+                        <div class="calendar-day">28</div>
+                        <div class="calendar-day">29</div>
+                        <div class="calendar-day">30</div>
+                        <div class="calendar-day">1</div>
+                    </div>
+                    
+                    <div class="upcoming-events">
+                        <h4>Today's Schedule</h4>
+                        <div class="event-item">
+                            <div class="event-time">2:00 PM - 3:00 PM</div>
+                            <p>Team Standup (Zoom)</p>
+                        </div>
+                        <div class="event-item">
+                            <div class="event-time">4:30 PM - 5:30 PM</div>
+                            <p>Code Review Session</p>
+                        </div>
+                    </div>
+                </section>
+                
+                <section class="card team-card">
+                    <h3>Dev Team</h3>
+                    <div class="team-member">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="John Doe" class="member-avatar">
+                        <div class="member-info">
+                            <h4>John Doe <span class="member-status"></span></h4>
+                            <p class="member-role">Backend Lead</p>
+                        </div>
+                    </div>
+                    <div class="team-member">
+                        <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="Alice Miller" class="member-avatar">
+                        <div class="member-info">
+                            <h4>Alice Miller <span class="member-status"></span></h4>
+                            <p class="member-role">Frontend Architect</p>
+                        </div>
+                    </div>
+                    <div class="team-member">
+                        <img src="https://randomuser.me/api/portraits/men/75.jpg" alt="Sam Khan" class="member-avatar">
+                        <div class="member-info">
+                            <h4>Sam Khan <span class="member-status"></span></h4>
+                            <p class="member-role">DevOps Engineer</p>
+                        </div>
+                    </div>
+                </section>
+                
+                <section class="card news-card">
+                    <h3>Tech Updates</h3>
+                    <div class="news-item">
+                        <div class="news-date">June 18, 2023</div>
+                        <h4 class="news-title">Node.js 20 Released</h4>
+                        <p>New features include experimental permissions model and synchronous import.meta.resolve.</p>
+                    </div>
+                    <div class="news-item">
+                        <div class="news-date">June 15, 2023</div>
+                        <h4 class="news-title">React Server Components</h4>
+                        <p>Learn how to adopt RSCs in your existing applications.</p>
+                    </div>
+                    <div class="news-item">
+                        <div class="news-date">June 10, 2023</div>
+                        <h4 class="news-title">TypeScript 5.1 Beta</h4>
+                        <p>Key improvements to inferred types and JSX handling.</p>
+                    </div>
+                </section>
+                
+                <section class="card resources-card">
+                    <h3>Developer Resources</h3>
+                    <div class="resource-tabs">
+                        <button class="resource-tab active">All</button>
+                        <button class="resource-tab">API Docs</button>
+                        <button class="resource-tab">Style Guides</button>
+                        <button class="resource-tab">Templates</button>
+                    </div>
+                    
+                    <div class="resource-list">
+                        <div class="resource-item">
+                            <div class="resource-icon">
+                                <i class="fas fa-file-code"></i>
+                            </div>
+                            <div>
+                                <h4 class="resource-name">API Documentation</h4>
+                                <p class="resource-meta">Latest version 3.2.1</p>
+                            </div>
+                        </div>
+                        <div class="resource-item">
+                            <div class="resource-icon">
+                                <i class="fas fa-paint-brush"></i>
+                            </div>
+                            <div>
+                                <h4 class="resource-name">Design System</h4>
+                                <p class="resource-meta">Storybook components</p>
+                            </div>
+                        </div>
+                        <div class="resource-item">
+                            <div class="resource-icon">
+                                <i class="fas fa-server"></i>
+                            </div>
+                            <div>
+                                <h4 class="resource-name">Deployment Guide</h4>
+                                <p class="resource-meta">Kubernetes setup</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <section class="card quick-links">
+                    <h3>Developer Tools</h3>
+                    <div class="links-grid">
+                        <a href="#" class="link-item">
+                            <div class="link-icon">
+                                <i class="fab fa-github"></i>
+                            </div>
+                            <span class="link-label">GitHub</span>
+                        </a>
+                        <a href="#" class="link-item">
+                            <div class="link-icon">
+                                <i class="fas fa-code"></i>
+                            </div>
+                            <span class="link-label">VS Code</span>
+                        </a>
+                        <a href="#" class="link-item">
+                            <div class="link-icon">
+                                <i class="fas fa-terminal"></i>
+                            </div>
+                            <span class="link-label">CLI Tools</span>
+                        </a>
+                        <a href="#" class="link-item">
+                            <div class="link-icon">
+                                <i class="fas fa-database"></i>
+                            </div>
+                            <span class="link-label">Database</span>
+                        </a>
+                        <a href="#" class="link-item">
+                            <div class="link-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <span class="link-label">Analytics</span>
+                        </a>
+                        <a href="#" class="link-item">
+                            <div class="link-icon">
+                                <i class="fas fa-bug"></i>
+                            </div>
+                            <span class="link-label">Bug Tracker</span>
+                        </a>
+                        <a href="#" class="link-item">
+                            <div class="link-icon">
+                                <i class="fas fa-cloud"></i>
+                            </div>
+                            <span class="link-label">Cloud Console</span>
+                        </a>
+                        <a href="#" class="link-item">
+                            <div class="link-icon">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <span class="link-label">Security</span>
+                        </a>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+    
+    <!-- AI Chatbot -->
+    <button class="ai-chatbot">
+        <i class="fas fa-robot"></i>
+    </button>
+    
+    <!-- Accessibility Controls -->
+    <div class="accessibility-controls">
+        <button class="accessibility-btn" id="darkModeToggle" title="Dark Mode">
+            <i class="fas fa-moon"></i>
+        </button>
+        <button class="accessibility-btn" id="textSizeIncrease" title="Increase Text Size">
+            A+
+        </button>
+        <button class="accessibility-btn" id="textSizeDecrease" title="Decrease Text Size">
+            A-
+        </button>
+    </div>
+    
+    <script>
+        // Dark Mode Toggle
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        darkModeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const icon = darkModeToggle.querySelector('i');
+            icon.classList.toggle('fa-moon');
+            icon.classList.toggle('fa-sun');
+        });
+
+        // Text Size Controls
+        const textSizeIncrease = document.getElementById('textSizeIncrease');
+        const textSizeDecrease = document.getElementById('textSizeDecrease');
+        
+        textSizeIncrease.addEventListener('click', () => {
+            const currentSize = parseFloat(getComputedStyle(document.body).fontSize);
+            document.body.style.fontSize = (currentSize + 1) + 'px';
+        });
+        
+        textSizeDecrease.addEventListener('click', () => {
+            const currentSize = parseFloat(getComputedStyle(document.body).fontSize);
+            if (currentSize > 12) {
+                document.body.style.fontSize = (currentSize - 1) + 'px';
+            }
+        });
+
+        // Calendar Navigation
+        const calendarPrev = document.querySelector('.calendar-nav button:first-child');
+        const calendarNext = document.querySelector('.calendar-nav button:last-child');
+        const calendarTitle = document.querySelector('.calendar-header h3');
+        
+        const months = ['January', 'February', 'March', 'April', 'May', 'June', 
+                       'July', 'August', 'September', 'October', 'November', 'December'];
+        let currentMonth = 5; // June
+        
+        calendarPrev.addEventListener('click', () => {
+            currentMonth = (currentMonth - 1 + 12) % 12;
+            calendarTitle.textContent = `${months[currentMonth]} 2023`;
+        });
+        
+        calendarNext.addEventListener('click', () => {
+            currentMonth = (currentMonth + 1) % 12;
+            calendarTitle.textContent = `${months[currentMonth]} 2023`;
+        });
+
+        // Resource Tabs
+        const resourceTabs = document.querySelectorAll('.resource-tab');
+        resourceTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                resourceTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+            });
+        });
+
+        // AI Chatbot
+        const aiChatbot = document.querySelector('.ai-chatbot');
+        aiChatbot.addEventListener('click', () => {
+            alert('AI Assistant: Hello Andrew! How can I help you today? Try commands like "@ai show my PRs" or "@ai schedule meeting with team"');
+        });
+
+        // Simulate typing @ai in search
+        const searchInput = document.querySelector('.search-bar input');
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === '@') {
+                setTimeout(() => {
+                    searchInput.value = '@ai ';
+                    searchInput.focus();
+                }, 10);
+            }
+        });
+
+        // Animate cards on load
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.card');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, 100 * index);
+            });
+        });
+    </script>
+</body>
+</html>
